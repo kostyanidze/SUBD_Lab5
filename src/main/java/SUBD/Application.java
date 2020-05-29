@@ -1,14 +1,12 @@
 package SUBD;
 
-import SUBD.entity.Customer;
 import SUBD.repository.*;
+import SUBD.service.serviceInterfaces.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -22,6 +20,12 @@ public class Application {
     private ProviderRepository providerRepository;
     private TourRepository tourRepository;
     private TypeOfServiceRepository typeOfServiceRepository;
+    private CustomerService customerService;
+    private EmployeeService employeeService;
+    private OrdersService ordersService;
+    private ProviderService providerService;
+    private TourService tourService;
+    private TypeOfServiceService typeOfServiceService;
 
     @Autowired
     public Application(CustomerRepository customerRepository,
@@ -29,13 +33,25 @@ public class Application {
                        OrdersRepository ordersRepository,
                        ProviderRepository providerRepository,
                        TourRepository tourRepository,
-                       TypeOfServiceRepository typeOfServiceRepository) {
+                       TypeOfServiceRepository typeOfServiceRepository,
+                       CustomerService customerService,
+                       EmployeeService employeeService,
+                       OrdersService ordersService,
+                       ProviderService providerService,
+                       TourService tourService,
+                       TypeOfServiceService typeOfServiceService) {
         this.customerRepository = customerRepository;
         this.employeeRepository = employeeRepository;
         this.ordersRepository = ordersRepository;
         this.providerRepository = providerRepository;
         this.tourRepository = tourRepository;
         this.typeOfServiceRepository = typeOfServiceRepository;
+        this.customerService = customerService;
+        this.employeeService = employeeService;
+        this.ordersService = ordersService;
+        this.providerService = providerService;
+        this.tourService = tourService;
+        this.typeOfServiceService = typeOfServiceService;
     }
 
     public static void main(String[] args){
@@ -44,17 +60,9 @@ public class Application {
     }
     @EventListener(ApplicationReadyEvent.class)
     public void onStart() {
-        this.firstRequest();
-        this.secondRequest();
-        //this.createCustomer(null,"Pupkin","Vasya","Vasvas", "ul M", 880055);
-        //this.deleteOrders();
-        this.readCustomer();
-        //this.updateCustomer();
-        this.readEmployee();
-        this.readOrders();
-        this.readProvider();
-        this.readTour();
-        this.readTypeOfService();
+        System.out.println(customerService.getAll());
+      /*  this.firstRequest();
+        this.secondRequest();*/
     }
 
     public void firstRequest() {
@@ -82,65 +90,4 @@ public class Application {
         });
     }
 
-    private void createCustomer(Integer id, String surname, String name, String middleName, String address,int phoneNumber){
-        Customer customer = new Customer();
-        customer.Customers(null, surname,name,middleName,address,phoneNumber,null);
-        customerRepository.save(customer);
-    }
-
-    private void deleteOrders() { ordersRepository.deleteById(1);}
-
-    private void readCustomer(){
-        Timestamp start = new Timestamp(System.currentTimeMillis());
-        customerRepository.findAll(PageRequest.of(0,5, Sort.Direction.ASC,"id"))
-                .toList().forEach(System.out::println);
-        Timestamp end = new Timestamp(System.currentTimeMillis());
-        System.out.println("Request time: " + (end.getTime() - start.getTime()) + " ms");
-    }
-
-    private void updateCustomer(){
-        Customer customer = new Customer();
-        customer.Customers(2,"Petrov","Ivan","Petrovich", "Ulitsa Zelenaya",850321, null);
-        customerRepository.save(customer);
-    }
-
-    private void readEmployee(){
-        Timestamp start = new Timestamp(System.currentTimeMillis());
-        employeeRepository.findAll(PageRequest.of(0,5, Sort.Direction.DESC,"salary"))
-                .toList().forEach(System.out::println);
-        Timestamp end = new Timestamp(System.currentTimeMillis());
-        System.out.println("Request time: " + (end.getTime() - start.getTime()) + " ms");
-    }
-
-    private void readOrders(){
-        Timestamp start = new Timestamp(System.currentTimeMillis());
-        ordersRepository.findAll(PageRequest.of(0,3, Sort.Direction.ASC,"dateOfIssuance"))
-                .toList().forEach(System.out::println);
-        Timestamp end = new Timestamp(System.currentTimeMillis());
-        System.out.println("Request time: " + (end.getTime() - start.getTime()) + " ms");
-    }
-
-    private void readProvider(){
-        Timestamp start = new Timestamp(System.currentTimeMillis());
-        providerRepository.findAll(PageRequest.of(0,3, Sort.Direction.ASC,"nameOfService"))
-                .toList().forEach(System.out::println);
-        Timestamp end = new Timestamp(System.currentTimeMillis());
-        System.out.println("Request time: " + (end.getTime() - start.getTime()) + " ms");
-    }
-
-    private void readTour(){
-        Timestamp start = new Timestamp(System.currentTimeMillis());
-        tourRepository.findAll(PageRequest.of(0,3, Sort.Direction.ASC,"cost"))
-                .toList().forEach(System.out::println);
-        Timestamp end = new Timestamp(System.currentTimeMillis());
-        System.out.println("Request time: " + (end.getTime() - start.getTime()) + " ms");
-    }
-
-    private void readTypeOfService(){
-        Timestamp start = new Timestamp(System.currentTimeMillis());
-        typeOfServiceRepository.findAll(PageRequest.of(0,3, Sort.Direction.ASC,"dateOfExecution"))
-                .toList().forEach(System.out::println);
-        Timestamp end = new Timestamp(System.currentTimeMillis());
-        System.out.println("Request time: " + (end.getTime() - start.getTime()) + " ms");
-    }
 }
