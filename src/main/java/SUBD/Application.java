@@ -61,8 +61,14 @@ public class Application {
     @EventListener(ApplicationReadyEvent.class)
     public void onStart() {
         System.out.println(customerService.getAll());
-      /*  this.firstRequest();
-        this.secondRequest();*/
+        System.out.println(employeeService.getAll());
+        System.out.println(ordersService.getAll());
+        System.out.println(providerService.getAll());
+        System.out.println(tourService.getAll());
+        System.out.println(typeOfServiceService.getAll());
+        this.firstRequest();
+        this.secondRequest();
+        this.thirdRequest();
     }
 
     public void firstRequest() {
@@ -85,8 +91,22 @@ public class Application {
 
         resultSecond.forEach(tourCostSort -> {
             System.out.print("Id: " + tourCostSort.getId() + " ");
-            System.out.println("Country: " + tourCostSort.getCountry()+ " ");
+            System.out.print("Country: " + tourCostSort.getCountry()+ " ");
             System.out.println("Cost: " + tourCostSort.getCost());
+        });
+    }
+
+    public void thirdRequest() {
+        Timestamp start = new Timestamp(System.currentTimeMillis());
+        List<OrdersBetweenTwoDates> resultThird = ordersRepository.findOrders();
+        Timestamp end = new Timestamp(System.currentTimeMillis());
+        System.out.println("Request time: " + (end.getTime() - start.getTime()) + " ms");
+
+        resultThird.forEach(OrdersBetweenTwoDates -> {
+            System.out.print("Id: " + OrdersBetweenTwoDates.getId() + " ");
+            System.out.print("DateOfIssuance: " + OrdersBetweenTwoDates.getDateOfIssuance() + " ");
+            System.out.print("Country: " + OrdersBetweenTwoDates.getCountry() + " ");
+            System.out.println("Cost: " + OrdersBetweenTwoDates.getCost());
         });
     }
 
